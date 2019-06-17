@@ -22,15 +22,22 @@ avalia ((No f (esq) (dir)), m, e)
     | f == "->" = avalia((esq), m, e) `implica` avalia((dir), m, e)
     | f == "<->" = avalia((esq), m, e) `biImplica` avalia((dir), m, e)
 --test:
---    | f == "<>" = procura((esq), m, e) && avalia((dir), m, "proximo estado")
---    | f == "[]" = procura((esq), m, e) && avalia((dir), m, "proximo estado")
+    | f == "<>" = avalia((dir), m, proximoEstado)
+    where proximoEstado = head (procura esq m e)
+--    | f == "[]" = procura((esq), m, e) && avalia((dir), m, proximoEstado((esq), m, e))
 avalia x = error "caso nao tratado" 
 
 
 --procura caminho no grafo
 --procura se podemos executar o programa no estado atual do grafo
-procura :: (Arv, [[String]], String) -> Bool
-procura x = error "caso nao tratado"
+procura :: Arv -> [[String]] -> String -> [String] 
+procura p [] e = []
+procura (Fo p) (x:xs) e 
+    | elem e x && elem p x  = [segundo x]
+    | otherwise = procura (Fo p) xs e
+--procura (No f) xs e tratar esse caso
+procura x y z = error "caso nao tratado"
+--deve retornar uma lista com os estados destinos que chegamos depois de executar p
 
 
 --primeiro estado da lista (do modelo)
@@ -38,6 +45,10 @@ estadoInicial :: [[String]] -> String
 estadoInicial xs = head(head xs)
 --estado onde vamos começar avaliando
 
+
+--segundo elemento da lista
+segundo :: [String] -> String 
+segundo [_,x,_] = x
 
 --implicacao (->)
 implica :: Bool -> Bool -> Bool 
