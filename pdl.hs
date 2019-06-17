@@ -16,13 +16,13 @@ verifica (formula, modelo)
 avalia :: (Arv, [[String]], String) -> Bool
 avalia ((Fo f), _, _) = False 
 avalia ((No f (esq) (dir)), m, e)
-    | f == "~" = not(avalia((esq), m, e))
-    | f == "^" = avalia((esq), m, e) && avalia((dir), m, e)
-    | f == "v" = avalia((esq), m, e) || avalia((dir), m, e)
-    | f == "->" = avalia((esq), m, e) `implica` avalia((dir), m, e)
-    | f == "<->" = avalia((esq), m, e) `biImplica` avalia((dir), m, e)
+    | f == "~" = not(avalia(esq, m, e))
+    | f == "^" = avalia(esq, m, e) && avalia(dir, m, e)
+    | f == "v" = avalia(esq, m, e) || avalia(dir, m, e)
+    | f == "->" = avalia(esq, m, e) `implica` avalia(dir, m, e)
+    | f == "<->" = avalia(esq, m, e) `biImplica` avalia(dir, m, e)
 --test:
-    | f == "<>" = avalia((dir), m, proximoEstado)
+    | f == "<>" = verificaPrograma esq m e && avalia(dir, m, proximoEstado)
     where proximoEstado = head (procura esq m e)
 --    | f == "[]" = ? 
 avalia x = error "caso nao tratado" 
@@ -33,12 +33,19 @@ avalia x = error "caso nao tratado"
 procura :: Arv -> [[String]] -> String -> [String] 
 procura p [] e = []
 procura (Fo p) (x:xs) e 
-    | elem e x && elem p x  = [segundo x]
+    | (head x == e) && elem p x  = [segundo x]
     | otherwise = procura (Fo p) xs e
 --procura (No f) xs e tratar esse caso
 procura x y z = error "caso nao tratado"
 --deve retornar uma lista com os estados destinos que chegamos depois de executar p
 
+
+--verifica se tem transicao com esse programa no estado atual
+verificaPrograma :: Arv -> [[String]] -> String -> Bool
+verificaPrograma p [] e = False 
+verificaPrograma (Fo p) (x:xs) e
+    | (head x == e) && elem p x = True
+    | otherwise = verificaPrograma (Fo p) xs e
 
 --primeiro estado da lista (do modelo)
 estadoInicial :: [[String]] -> String
