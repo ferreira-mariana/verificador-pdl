@@ -1,22 +1,22 @@
 --arvore para receber a string recursivamente
 data Arv = Null | Fo String | No String Arv Arv deriving (Show, Read, Eq)
 
-isSatisfied :: Arv -> String
-isSatisfied x
-    | isSatisfiedBool(x) == False = "Nao vale"
-    | isSatisfiedBool(x) == True = "Vale"
+verifica :: (Arv,[[String]]) -> String
+verifica (f,m)
+    | avalia(f) == False = "Nao vale"
+    | avalia(f) == True = "Vale"
 --tratar os casos em que precisamos mostrar o caminho no modelo
+--'f' de formula e 'm' de modelo
 
-
-isSatisfiedBool :: Arv -> Bool
-isSatisfiedBool (Fo x) = False 
-isSatisfiedBool (No x (right) (left))
-    | x == "~" =  not(isSatisfiedBool(right))
-    | x == "^" = isSatisfiedBool(right) && isSatisfiedBool(left)
-    | x == "v" = isSatisfiedBool(right) || isSatisfiedBool(left)
-    | x == "->" = isSatisfiedBool(right) `implica` isSatisfiedBool(left)
-    | x == "<->" = isSatisfiedBool(right) `biImplica` isSatisfiedBool(left)
-isSatisfiedBool x = error "caso nao tratado" 
+avalia:: Arv -> Bool
+avalia(Fo f) = False 
+avalia(No f (esq) (dir))
+    | f == "~" =  not(avalia(esq))
+    | f == "^" = avalia(esq) && avalia(dir)
+    | f == "v" = avalia(esq) || avalia(dir)
+    | f == "->" = avalia(esq) `implica` avalia(dir)
+    | f == "<->" = avalia(esq) `biImplica` avalia(dir)
+avalia f = error "caso nao tratado" 
 
 
 modelo = [["a", "b", "alpha"], ["a", "c", "beta"], ["c", "d", "alpha"]]
