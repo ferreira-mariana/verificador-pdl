@@ -6,10 +6,10 @@ modelo = [["a", "b", "alpha"], ["a", "c", "beta"], ["c", "d", "alpha"]]
 
 
 verifica :: (Arv, [[String]]) -> String
-verifica (f, m)
-    | avalia(f, m, e) == False = "Nao vale"
-    | avalia(f, m, e) == True = "Vale"
-    where e = estadoInicial m
+verifica (formula, modelo)
+    | avalia(formula, modelo, estado) == False = "Nao vale"
+    | avalia(formula, modelo, estado) == True = "Vale"
+    where estado = estadoInicial modelo
 --tratar os casos em que precisamos mostrar o caminho no modelo
 --'f' de formula, 'm' de modelo e 'e' de estado
 
