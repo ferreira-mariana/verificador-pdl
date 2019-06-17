@@ -14,9 +14,7 @@ verifica (f, m)
 --'f' de formula, 'm' de modelo e 'e' de estado
 
 avalia :: (Arv, [[String]], String) -> Bool
-avalia ((Fo f), m, e) 
-    | (length f == 1) = False
-    | otherwise = procura(Fo f, m, e) --procura programa no grafo
+avalia ((Fo f), _, _) = False 
 avalia ((No f (esq) (dir)), m, e)
     | f == "~" = not(avalia((esq), m, e))
     | f == "^" = avalia((esq), m, e) && avalia((dir), m, e)
@@ -24,8 +22,8 @@ avalia ((No f (esq) (dir)), m, e)
     | f == "->" = avalia((esq), m, e) `implica` avalia((dir), m, e)
     | f == "<->" = avalia((esq), m, e) `biImplica` avalia((dir), m, e)
 --test:
---    | f == "<>" = avalia((esq), m, e) && avalia((dir), m, "proximo estado")
---    | f == "[]" = avalia((esq), m, e) && avalia((dir), m, "proximo estado")
+--    | f == "<>" = procura((esq), m, e) && avalia((dir), m, "proximo estado")
+--    | f == "[]" = procura((esq), m, e) && avalia((dir), m, "proximo estado")
 avalia x = error "caso nao tratado" 
 
 
@@ -56,9 +54,6 @@ biImplica p q
 --obs:
 -- (No "~" (Fo "p") (Null) )
 -- quando tivermos negaçao, o filho a direita será sempre vazio
--- Vamos considerar string de tamanho 1 como p, q, r etc
--- strings maiores serao programas: alpha, beta, gama etc
-
 
 --entradas:
 -- (Fo ("p"), [["a","b","alpha"]])
