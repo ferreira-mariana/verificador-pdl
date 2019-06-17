@@ -38,3 +38,11 @@ biImplica p q
 --obs:
 -- (No "~" (Fo "p") (Null) )
 -- quando tivermos negaçao, o filho a direita será sempre vazio
+
+--entradas:
+-- (Fo ("p"), [["a","b","alpha"]])
+-- ((No "~" (Fo "p") (Null)), [["a","b","alpha"]])
+-- ((No "^" (Fo "p") (Fo "q")), [["a","b","alpha"]])
+-- ((No "v" (Fo "p") (Fo "q")), [["a","b","alpha"]])
+-- ((No "->" (Fo "p") (Fo "q")), [["a","b","alpha"]])
+-- ((No "<->" (Fo "p") (Fo "q")), [["a","b","alpha"]])
