@@ -51,6 +51,13 @@ biImplica p q
     | (p == q) = True
     | otherwise = False  
 
+
+acharLista :: [[String]] -> String -> [String]
+
+acharLista [[]] y = []
+acharLista (x:xs) y | elem y x == True = x
+                    | elem y x == False = acharLista xs y
+                    
 --obs:
 -- (No "~" (Fo "p") (Null) )
 -- quando tivermos negaçao, o filho a direita será sempre vazio
