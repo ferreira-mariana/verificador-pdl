@@ -24,7 +24,7 @@ avalia ((No f (esq) (dir)), m, e)
 --test:
     | f == "<>" = avalia((dir), m, proximoEstado)
     where proximoEstado = head (procura esq m e)
---    | f == "[]" = procura((esq), m, e) && avalia((dir), m, proximoEstado((esq), m, e))
+--    | f == "[]" = ? 
 avalia x = error "caso nao tratado" 
 
 
