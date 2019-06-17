@@ -1,26 +1,33 @@
 --arvore para receber a string recursivamente
 data Arv = Null | Fo String | No String Arv Arv deriving (Show, Read, Eq)
 
-verifica :: (Arv,[[String]]) -> String
-verifica (f,m)
-    | avalia(f) == False = "Nao vale"
-    | avalia(f) == True = "Vale"
---tratar os casos em que precisamos mostrar o caminho no modelo
---'f' de formula e 'm' de modelo
-
-avalia:: Arv -> Bool
-avalia(Fo f) = False 
-avalia(No f (esq) (dir))
-    | f == "~" =  not(avalia(esq))
-    | f == "^" = avalia(esq) && avalia(dir)
-    | f == "v" = avalia(esq) || avalia(dir)
-    | f == "->" = avalia(esq) `implica` avalia(dir)
-    | f == "<->" = avalia(esq) `biImplica` avalia(dir)
-avalia f = error "caso nao tratado" 
-
-
 modelo = [["a", "b", "alpha"], ["a", "c", "beta"], ["c", "d", "alpha"]]
 -- chamar recursivamente pros dois lados no modelo
+
+
+verifica :: (Arv, [[String]]) -> String
+verifica (f, m)
+    | avalia(f, m, e) == False = "Nao vale"
+    | avalia(f, m, e) == True = "Vale"
+    where e = estadoInicial m
+--tratar os casos em que precisamos mostrar o caminho no modelo
+--'f' de formula, 'm' de modelo e 'e' de estado
+
+avalia :: (Arv, [[String]], String) -> Bool
+avalia ((Fo f), _, _) = False 
+avalia ((No f (esq) (dir)), m, e)
+    | f == "~" = not(avalia((esq), m, e))
+    | f == "^" = avalia((esq), m, e) && avalia((dir), m, e)
+    | f == "v" = avalia((esq), m, e) || avalia((dir), m, e)
+    | f == "->" = avalia((esq), m, e) `implica` avalia((dir), m, e)
+    | f == "<->" = avalia((esq), m, e) `biImplica` avalia((dir), m, e)
+avalia x = error "caso nao tratado" 
+
+
+--primeiro estado da lista (do modelo)
+estadoInicial :: [[String]] -> String
+estadoInicial xs = head(head xs)
+--estado onde vamos começar avaliando
 
 
 --implicacao (->)
