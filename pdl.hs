@@ -23,20 +23,21 @@ avalia ((No f (esq) (dir)), m, e)
     | f == "<->" = avalia(esq, m, e) `biImplica` avalia(dir, m, e)
 --test:
     | f == "<>" = verificaPrograma esq m e && avalia(dir, m, proximoEstado)
-    where proximoEstado = head (procura esq m e)
+    where proximoEstado = head (procura esq m e [])
 --    | f == "[]" = ? 
 avalia x = error "caso nao tratado" 
 
 
 --procura caminho no grafo
 --procura se podemos executar o programa no estado atual do grafo
-procura :: Arv -> [[String]] -> String -> [String] 
-procura p [] e = []
-procura (Fo p) (x:xs) e 
-    | (head x == e) && elem p x  = [segundo x]
-    | otherwise = procura (Fo p) xs e
+--parametros: programa, modelo, estado atual e lista com os estados destinos
+procura :: Arv -> [[String]] -> String -> [String] -> [String] 
+procura p [] e _ = []
+procura (Fo p) (x:xs) e destinos 
+    | (head x == e) && elem p x  = [segundo x] ++ procura (Fo p) xs e destinos
+    | otherwise = procura (Fo p) xs e destinos
 --procura (No f) xs e tratar esse caso
-procura x y z = error "caso nao tratado"
+procura x y z w = error "caso nao tratado"
 --deve retornar uma lista com os estados destinos que chegamos depois de executar p
 
 
@@ -46,6 +47,7 @@ verificaPrograma p [] e = False
 verificaPrograma (Fo p) (x:xs) e
     | (head x == e) && elem p x = True
     | otherwise = verificaPrograma (Fo p) xs e
+
 
 --primeiro estado da lista (do modelo)
 estadoInicial :: [[String]] -> String
