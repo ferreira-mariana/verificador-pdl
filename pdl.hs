@@ -36,7 +36,9 @@ avaliaEstadosTag esq dir m destinos
     | avalia dir m (head destinos) == True = True
     | otherwise = avaliaEstadosTag esq dir m (tail destinos)
 
-
+--vai conferindo todos os estados, se achar falso nao vale []
+--se todos forem verdadeiros, vale []
+--destinos é a lista de estados destinos depois de executar o programa
 avaliaEstadosCol :: Arv -> Arv -> [[String]] -> [String] -> Bool
 avaliaEstadosCol esq dir [] _ = False
 avaliaEstadosCol esq dir _ [] = True
