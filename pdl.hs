@@ -1,7 +1,7 @@
 --arvore para receber a string recursivamente
 data Arv = Null | Fo String | No String Arv Arv deriving (Show, Read, Eq)
 
-modelo = [["a", "b", "alpha"], ["a", "c", "beta"], ["c", "d", "alpha"]]
+--modelo = [["a", "b", "alpha"], ["a", "c", "beta"], ["c", "d", "alpha"]]
 -- chamar recursivamente pros dois lados no modelo
 
 
@@ -32,6 +32,7 @@ avalia x y z = error "caso nao tratado"
 -- caso não ache nenhum estado, retorna falso. (ou seja, se achar pelo menos um já retorna True)
 avaliaEstados :: Arv -> Arv -> [[String]] -> [String] -> Bool
 avaliaEstados esq dir [] _ = False
+avaliaEstados esq dir _ [] = False
 avaliaEstados esq dir m destinos
     | avalia dir m (head destinos) == True = True
     | otherwise = avaliaEstados esq dir m (tail destinos)
