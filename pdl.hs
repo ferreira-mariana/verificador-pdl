@@ -34,7 +34,7 @@ avalia x = error "caso nao tratado"
 procura :: Arv -> [[String]] -> String -> [String] -> [String] 
 procura p [] e _ = []
 procura (Fo p) (x:xs) e destinos 
-    | (head x == e) && elem p x  = [segundo x] ++ procura (Fo p) xs e destinos
+    | (head x == e) && elem p x  = [x !! 1] ++ procura (Fo p) xs e destinos
     | otherwise = procura (Fo p) xs e destinos
 --procura (No f) xs e tratar esse caso
 procura x y z w = error "caso nao tratado"
@@ -54,10 +54,6 @@ estadoInicial :: [[String]] -> String
 estadoInicial xs = head(head xs)
 --estado onde vamos começar avaliando
 
-
---segundo elemento da lista
-segundo :: [String] -> String 
-segundo [_,x,_] = x
 
 --implicacao (->)
 implica :: Bool -> Bool -> Bool 
