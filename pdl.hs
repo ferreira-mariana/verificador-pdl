@@ -22,22 +22,27 @@ avalia (No f (esq) (dir)) m e
     | f == "->" = avalia esq m e `implica` avalia dir m e
     | f == "<->" = avalia esq m e `biImplica` avalia dir m e
 --test:
-    | f == "<>" = verificaPrograma esq m e && avaliaEstados esq dir m destinos
-    where destinos = procura esq m e [] 
-    --destinos é a lista dos estados possíveis de chegar 
---  f == "[]" = ? 
+    | f == "<>" = verificaPrograma esq m e && avaliaEstadosTag esq dir m (procura esq m e [])
+    --(procura esq m e []) é a lista dos estados possíveis de chegar, os estados destinos
+    | f == "[]" = not(verificaPrograma esq m e) || avaliaEstadosCol esq dir m (procura esq m e [])
 avalia x y z = error "caso nao tratado" 
 
 -- avaliaEstados vai conferindo cada estado até que ache um que seja possível executar o programa
 -- caso não ache nenhum estado, retorna falso. (ou seja, se achar pelo menos um já retorna True)
-avaliaEstados :: Arv -> Arv -> [[String]] -> [String] -> Bool
-avaliaEstados esq dir [] _ = False
-avaliaEstados esq dir _ [] = False
-avaliaEstados esq dir m destinos
+avaliaEstadosTag :: Arv -> Arv -> [[String]] -> [String] -> Bool
+avaliaEstadosTag esq dir [] _ = False
+avaliaEstadosTag esq dir _ [] = False
+avaliaEstadosTag esq dir m destinos
     | avalia dir m (head destinos) == True = True
-    | otherwise = avaliaEstados esq dir m (tail destinos)
+    | otherwise = avaliaEstadosTag esq dir m (tail destinos)
 
 
+avaliaEstadosCol :: Arv -> Arv -> [[String]] -> [String] -> Bool
+avaliaEstadosCol esq dir [] _ = False
+avaliaEstadosCol esq dir _ [] = True
+avaliaEstadosCol esq dir m destinos
+    | avalia dir m (head destinos) == False = False
+    | otherwise = avaliaEstadosCol esq dir m (tail destinos)
 
 --procura caminho no grafo
 --procura se podemos executar o programa no estado atual do grafo
