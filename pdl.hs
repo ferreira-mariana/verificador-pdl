@@ -5,37 +5,47 @@ modelo = [["a", "b", "alpha"], ["a", "c", "beta"], ["c", "d", "alpha"]]
 -- chamar recursivamente pros dois lados no modelo
 
 
-verifica :: (Arv, [[String]]) -> String
-verifica (formula, modelo)
-    | avalia(formula, modelo, estado) == False = "Nao vale"
-    | avalia(formula, modelo, estado) == True = "Vale"
+verifica :: Arv -> [[String]] -> String
+verifica formula modelo
+    | avalia formula modelo estado == False = "Nao vale"
+    | avalia formula modelo estado == True = "Vale"
     where estado = estadoInicial modelo
 --tratar os casos em que precisamos mostrar o caminho no modelo
 --'f' de formula, 'm' de modelo e 'e' de estado
 
-avalia :: (Arv, [[String]], String) -> Bool
-avalia ((Fo f), _, _) = False 
-avalia ((No f (esq) (dir)), m, e)
-    | f == "~" = not(avalia(esq, m, e))
-    | f == "^" = avalia(esq, m, e) && avalia(dir, m, e)
-    | f == "v" = avalia(esq, m, e) || avalia(dir, m, e)
-    | f == "->" = avalia(esq, m, e) `implica` avalia(dir, m, e)
-    | f == "<->" = avalia(esq, m, e) `biImplica` avalia(dir, m, e)
+avalia :: Arv -> [[String]] -> String -> Bool
+avalia (Fo f) _ _ = False 
+avalia (No f (esq) (dir)) m e
+    | f == "~" = not(avalia esq m e)
+    | f == "^" = avalia esq m e && avalia dir m e
+    | f == "v" = avalia esq m e || avalia dir m e
+    | f == "->" = avalia esq m e `implica` avalia dir m e
+    | f == "<->" = avalia esq m e `biImplica` avalia dir m e
 --test:
-    | f == "<>" = verificaPrograma esq m e && avalia(dir, m, proximoEstado)
-    where proximoEstado = head (procura esq m e [])
---    | f == "[]" = ? 
-avalia x = error "caso nao tratado" 
+    | f == "<>" = verificaPrograma esq m e && avaliaEstados esq dir m destinos
+    where destinos = procura esq m e [] 
+    --destinos é a lista dos estados possíveis de chegar 
+--  f == "[]" = ? 
+avalia x y z = error "caso nao tratado" 
+
+-- avaliaEstados vai conferindo cada estado até que ache um que seja possível executar o programa
+-- caso não ache nenhum estado, retorna falso. (ou seja, se achar pelo menos um já retorna True)
+avaliaEstados :: Arv -> Arv -> [[String]] -> [String] -> Bool
+avaliaEstados esq dir [] _ = False
+avaliaEstados esq dir m destinos
+    | avalia dir m (head destinos) == True = True
+    | otherwise = avaliaEstados esq dir m (tail destinos)
+
 
 
 --procura caminho no grafo
 --procura se podemos executar o programa no estado atual do grafo
 --parametros: programa, modelo, estado atual e lista com os estados destinos
 procura :: Arv -> [[String]] -> String -> [String] -> [String] 
-procura p [] e _ = []
-procura (Fo p) (x:xs) e destinos 
-    | (head x == e) && elem p x  = [x !! 1] ++ procura (Fo p) xs e destinos
-    | otherwise = procura (Fo p) xs e destinos
+procura pi [] e _ = []
+procura (Fo pi) (x:xs) e destinos 
+    | (head x == e) && elem pi x  = [x !! 1] ++ procura (Fo pi) xs e destinos
+    | otherwise = procura (Fo pi) xs e destinos
 --procura (No f) xs e tratar esse caso
 procura x y z w = error "caso nao tratado"
 --deve retornar uma lista com os estados destinos que chegamos depois de executar p
@@ -43,10 +53,10 @@ procura x y z w = error "caso nao tratado"
 
 --verifica se tem transicao com esse programa no estado atual
 verificaPrograma :: Arv -> [[String]] -> String -> Bool
-verificaPrograma p [] e = False 
-verificaPrograma (Fo p) (x:xs) e
-    | (head x == e) && elem p x = True
-    | otherwise = verificaPrograma (Fo p) xs e
+verificaPrograma pi [] e = False 
+verificaPrograma (Fo pi) (x:xs) e
+    | (head x == e) && elem pi x = True
+    | otherwise = verificaPrograma (Fo pi) xs e
 
 
 --primeiro estado da lista (do modelo)
