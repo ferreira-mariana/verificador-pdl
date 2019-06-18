@@ -21,10 +21,9 @@ avalia (No f (esq) (dir)) m e
     | f == "v" = avalia esq m e || avalia dir m e
     | f == "->" = avalia esq m e `implica` avalia dir m e
     | f == "<->" = avalia esq m e `biImplica` avalia dir m e
---test:
     | f == "<>" = verificaPrograma esq m e && avaliaEstadosTag esq dir m (procura esq m e [])
-    --(procura esq m e []) é a lista dos estados possíveis de chegar, os estados destinos
     | f == "[]" = not(verificaPrograma esq m e) || avaliaEstadosCol esq dir m (procura esq m e [])
+    --(procura esq m e []) é a lista dos estados possíveis de chegar, os estados destinos
 avalia x y z = error "caso nao tratado" 
 
 -- avaliaEstados vai conferindo cada estado até que ache um que seja possível executar o programa
@@ -54,9 +53,11 @@ procura pi [] e _ = []
 procura (Fo pi) (x:xs) e destinos 
     | (head x == e) && elem pi x  = [x !! 1] ++ procura (Fo pi) xs e destinos
     | otherwise = procura (Fo pi) xs e destinos
---procura (No f) xs e tratar esse caso
-procura x y z w = error "caso nao tratado"
+procura (No f esq dir) m e destinos
+    | f == "?" = [e]
+procura x y z w = error "caso nao tratado na funcao procura"
 --deve retornar uma lista com os estados destinos que chegamos depois de executar p
+--no caso de "?", a execucao do programa nao altera o estado, entao retornamos o mesmo estado
 
 
 --verifica se tem transicao com esse programa no estado atual
@@ -65,6 +66,9 @@ verificaPrograma pi [] e = False
 verificaPrograma (Fo pi) (x:xs) e
     | (head x == e) && elem pi x = True
     | otherwise = verificaPrograma (Fo pi) xs e
+verificaPrograma (No f esq dir) m e
+    | f == "?" = avalia esq m e
+    | otherwise = error "caso nao tratado na funcao verificaPrograma" 
 
 
 --primeiro estado da lista (do modelo)
