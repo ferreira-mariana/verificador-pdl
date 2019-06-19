@@ -1,8 +1,8 @@
-#﻿Verificador de fórmulas PDL
+# Verificador de fórmulas PDL
 
 Para executar o programa, entre na pasta verificador-pdl e execute no terminal:
 ```
-$ **ghci**
+$ ghci
 ```
 Você deve receber como retorno:
 ```
@@ -12,7 +12,7 @@ Prelude>
 
 Depois, compile o programa:
 ```
-Prelude> **:l pdl.hs**
+Prelude> :l pdl.hs
 ```
 Você deve receber como retorno:
 ```
@@ -22,13 +22,14 @@ Ok, modules loaded: Main.
 ``` 
 
 Então podemos usar a função verifica para verificar as fórmulas PDL nos modelos:
+```
 *Main> verifica (Fo "p") [["a","b","alpha"]]
-
+```
 Onde a entrada da função verifica corresponde primeiro à fórmula PDL, que é uma árvore binária, e segundo ao modelo que é uma lista de lista.
-Neste caso [["a","b","alpha"]] significa “a chega em b através de alpha”
-E (Fo "p")significa que p é uma folha
+Nesse caso, [["a","b","alpha"]] significa “a chega em b através de alpha”
+E (Fo "p") significa que p é uma folha.
 
-exemplos de entradas:
+Mais exemplos de entradas:
 
 * verifica (No "~" (Fo "p") (Null) [["a","b","alpha"]]
 
@@ -55,9 +56,4 @@ exemplos de entradas:
 * verifica (No "<>" (No "?" (No "^" (Fo "q") (Fo "p") ) (Null)) (No "~" (Fo "p") (Null)))  [["a","b","alpha"], ["a","c","alpha"], ["c","d","beta"]]
 
 * verifica (No "<>" (No "?" (No "v" (Fo "q") (No "~" (Fo "p") (Null) ) ) (Null) ) (No "~" (Fo "p") (Null)))  [["a","b","alpha"], ["a","c","alpha"], ["c","d","beta"]]
-
-
-
-
-
 
