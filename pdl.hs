@@ -1,8 +1,6 @@
 --arvore para receber a string recursivamente
 data Arv = Null | Fo String | No String Arv Arv deriving (Show, Read, Eq)
 
---modelo = [["a", "b", "alpha"], ["a", "c", "beta"], ["c", "d", "alpha"]]
--- chamar recursivamente pros dois lados no modelo
 
 
 verifica :: Arv -> [[String]] -> String
@@ -11,7 +9,6 @@ verifica formula modelo
     | avalia formula modelo estado == True = "Vale"
     where estado = estadoInicial modelo
 --tratar os casos em que precisamos mostrar o caminho no modelo
---'f' de formula, 'm' de modelo e 'e' de estado
 
 avalia :: Arv -> [[String]] -> String -> Bool
 avalia (Fo f) _ _ = False 
